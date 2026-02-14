@@ -10,7 +10,7 @@ async function initVectorStore(documents) {
             embeddings,
             {
                 collectionName: "fitness_knowledge",
-                url: "http://localhost:8000"
+                url: process.env.CHROMA_URL
             }
         );
     }
