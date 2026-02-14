@@ -22,7 +22,7 @@ app.use('/api/users', userRouter);
 app.use('/api/diet', dietRouter);
 app.use('/api/workout', workoutRouter);
 
-app.listen(process.env.PORT, async () => {
+app.listen(process.env.PORT || 5000, async () => {
     try {
         await connection;
         console.log("server is running");
