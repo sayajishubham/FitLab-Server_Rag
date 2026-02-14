@@ -22,13 +22,20 @@ app.use(cookieParser());
 app.use('/api/users', userRouter);
 app.use('/api/diet', dietRouter);
 app.use('/api/workout', workoutRouter);
-async function initializeRAG() {
-    try {
-        await ingest();
-        console.log("✅ RAG Vector Store Ready");
-    } catch (err) {
-        console.error("❌ RAG Initialization Error:", err);
+async function initializeRAG(retries = 10) {
+    while (retries > 0) {
+        try {
+            await ingest();
+            console.log("✅ RAG Vector Store Ready");
+            return;
+        } catch (err) {
+            console.log("⏳ Chroma not ready. Retrying in 8 seconds...");
+            retries--;
+            await new Promise(res => setTimeout(res, 8000));
+        }
     }
+
+    console.error("❌ Failed to initialize RAG after retries.");
 }
 async function startServer() {
     try {
