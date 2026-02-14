@@ -42,14 +42,14 @@ async function startServer() {
         await connection;
         console.log("MongoDB Connected");
 
-        await initializeRAG();
-        console.log("RAG Vector Store Ready");
 
         const PORT = process.env.PORT || 5000;
 
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });
+        initializeRAG();
+        console.log("RAG Vector Store Ready");
 
     } catch (error) {
         console.error("❌ Server Startup Error:", error);
