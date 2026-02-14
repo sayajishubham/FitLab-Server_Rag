@@ -53,4 +53,4 @@ async function ingest() {
     console.log("Knowledge successfully embedded with metadata!");
 }
 
-ingest();
+module.exports = { ingest }

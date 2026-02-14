@@ -6,6 +6,7 @@ const userRouter = require('./Router/user.router');
 const workoutRouter = require('./Router/workout.router');
 const dietRouter = require('./Router/diet.router');
 const connection = require('./config/db');
+const { ingest } = require('./services/ingestion');
 
 const app = express();
 
@@ -21,12 +22,32 @@ app.use(cookieParser());
 app.use('/api/users', userRouter);
 app.use('/api/diet', dietRouter);
 app.use('/api/workout', workoutRouter);
-
-app.listen(process.env.PORT || 5000, async () => {
+async function initializeRAG() {
+    try {
+        await ingest();
+        console.log("✅ RAG Vector Store Ready");
+    } catch (err) {
+        console.error("❌ RAG Initialization Error:", err);
+    }
+}
+async function startServer() {
     try {
         await connection;
-        console.log("server is running");
+        console.log("MongoDB Connected");
+
+        await initializeRAG();
+        console.log("RAG Vector Store Ready");
+
+        const PORT = process.env.PORT || 5000;
+
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+
     } catch (error) {
-        console.log(error);
+        console.error("❌ Server Startup Error:", error);
+        process.exit(1);
     }
-});
+}
+
+startServer();
